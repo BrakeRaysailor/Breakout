@@ -21,7 +21,7 @@ public class Breakout extends GraphicsProgram {
 
     @Override
     public void init(){
-
+// this is a comment
 
         numBricksInRow = (int) (getWidth() / (Brick.WIDTH + 5.0));
 
