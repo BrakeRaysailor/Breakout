@@ -11,29 +11,29 @@ public class Breakout extends GraphicsProgram {
     private Paddle paddle;
     private int lives = 3;
     private int score = 0;
-    private int brickHealth;
+    private int row;
+    private Brick brick;
 
     private int numBricksInRow;
 
     private GLabel livesLabel;
+    private GLabel scoreLabel;
 
-    private Color[] rowColors = {Color.RED,  Color.ORANGE, Color.YELLOW,  Color.GREEN, Color.CYAN, Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN};
+    private Color[] rowColors = {Color.RED,  Color.ORANGE, Color.YELLOW,  Color.GREEN, Color.CYAN, Color.BLUE, Color.MAGENTA, Color.PINK, Color.DARK_GRAY, Color.BLACK};
 
     @Override
     public void init(){
-// this is a comment
 
         numBricksInRow = (int) (getWidth() / (Brick.WIDTH + 5.0));
-
         for (int row = 0; row < 10; row++) {
+            this.row = row;
 
             for (int col = 0; col < numBricksInRow; col++) {
-                brickHealth = row - 1;
 
                 double brickX = 10 + col * (Brick.WIDTH + 5);
                 double brickY = Brick.HEIGHT + row * (Brick.HEIGHT + 5);
 
-                Brick brick = new Brick(brickX, brickY, rowColors[row], row);
+                brick = new Brick(brickX, brickY, rowColors[9-row], 10-row);
                 add(brick);
             }
         }
@@ -44,8 +44,11 @@ public class Breakout extends GraphicsProgram {
         paddle = new Paddle(230, 430, 50 ,10);
         add(paddle);
 
-        livesLabel = new GLabel("Lives: " + (lives),getWidth()/2 - 22,10);
+        livesLabel = new GLabel("Lives: " + (lives),getWidth()/3 - 22,10);
         add(livesLabel);
+
+        scoreLabel = new GLabel("Score: " + (score), getWidth()*2/3 - 22, 10);
+        add(scoreLabel);
     }
 
     @Override
@@ -119,11 +122,12 @@ public class Breakout extends GraphicsProgram {
 
             if(obj instanceof Brick){
                     ball.bounce();
-                    if(this.brickHealth <= 0){
+                    ((Brick) obj).health -= 1;
+                    score += 10;
+                    scoreLabel.setLabel("Score: " + score);
+                    if(((Brick) obj).health>0){((Brick) obj).setFillColor(rowColors[((Brick) obj).health - 1]);}
+                    if(((Brick) obj).health <= 0){
                         this.remove(obj);
-                    }else{
-                        this.brickHealth -= 1;
-                        ((Brick) obj).setFillColor(rowColors[8 - this.brickHealth]);
                     }
 
             }
